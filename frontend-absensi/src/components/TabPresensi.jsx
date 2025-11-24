@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // <--- Import Ini
+import Swal from 'sweetalert2';
 
 const TabPresensi = () => {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
   const [user, setUser] = useState(null);
   const [todayStatus, setTodayStatus] = useState('idle');
+
+  // Ambil URL Backend dari Environment Variable
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -16,9 +19,10 @@ const TabPresensi = () => {
 
   const fetchHistory = async (currentUser) => {
     try {
+      // GANTI URL DI SINI
       const url = currentUser.role === 'admin' 
-        ? 'http://localhost:5001/attendance/all' 
-        : `http://localhost:5001/attendance/${currentUser.id}`;
+        ? `${API_URL}/attendance/all` 
+        : `${API_URL}/attendance/${currentUser.id}`;
       
       const response = await axios.get(url);
       const data = response.data;
@@ -48,15 +52,15 @@ const TabPresensi = () => {
   const handleCheckIn = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5001/attendance/in', { user_id: user.id });
+      // GANTI URL DI SINI
+      await axios.post(`${API_URL}/attendance/in`, { user_id: user.id });
       
-      // Pop up Sukses Check In
       Swal.fire({
         icon: 'success',
         title: 'Berhasil Masuk!',
-        text: 'Selamat bekerja, semangat ya budak korporat!',
+        text: 'Selamat bekerja, semangat ya!',
         showConfirmButton: false,
-        timer: 5000
+        timer: 2000
       });
       
       fetchHistory(user);
@@ -69,15 +73,15 @@ const TabPresensi = () => {
   const handleCheckOut = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5001/attendance/out', { user_id: user.id });
+      // GANTI URL DI SINI
+      await axios.post(`${API_URL}/attendance/out`, { user_id: user.id });
       
-      // Pop up Sukses Check Out
       Swal.fire({
         icon: 'success',
         title: 'Berhasil Pulang!',
-        text: 'Hati-hati di jalan, jangan sampai sakit ya!',
+        text: 'Hati-hati di jalan, sampai jumpa besok!',
         showConfirmButton: false,
-        timer: 5000
+        timer: 2000
       });
 
       fetchHistory(user);

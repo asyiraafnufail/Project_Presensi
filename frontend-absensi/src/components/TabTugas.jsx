@@ -7,6 +7,9 @@ const TabTugas = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
+  // Ambil URL Backend dari Environment Variable
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
     setUser(userData);
@@ -15,7 +18,8 @@ const TabTugas = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/tasks');
+      // GANTI URL DI SINI
+      const response = await axios.get(`${API_URL}/tasks`);
       setTasks(response.data);
     } catch (error) { console.error(error); }
   };
@@ -23,7 +27,12 @@ const TabTugas = () => {
   const handleAddTask = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/tasks', { title, description, created_by: user.id });
+      // GANTI URL DI SINI
+      await axios.post(`${API_URL}/tasks`, { 
+        title, 
+        description, 
+        created_by: user.id 
+      });
       setTitle(''); setDescription(''); fetchTasks();
     } catch (error) { alert("Gagal menambah tugas."); }
   };
@@ -31,7 +40,10 @@ const TabTugas = () => {
   const handleComplete = async (taskId) => {
     if (!confirm("Tandai tugas ini selesai?")) return;
     try {
-      await axios.put(`http://localhost:5001/tasks/${taskId}/complete`, { user_id: user.id });
+      // GANTI URL DI SINI
+      await axios.put(`${API_URL}/tasks/${taskId}/complete`, { 
+        user_id: user.id 
+      });
       fetchTasks();
     } catch (error) { alert("Gagal update status."); }
   };
